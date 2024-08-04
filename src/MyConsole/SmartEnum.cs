@@ -5,6 +5,15 @@ namespace MyConsole;
 public class SmartEnum<TEnum> : IEquatable<SmartEnum<TEnum>> where TEnum : SmartEnum<TEnum>
 {
     private static Dictionary<int, TEnum> _enumerations = CreateEnumerations();
+    
+    public static TEnum? FromValue(int value) =>
+        _enumerations.TryGetValue(value, out var enumeration) ? enumeration : null;
+
+    public static TEnum? FromName(string name) =>
+        _enumerations.Values
+            .Where(w => w.Name == name)
+            .FirstOrDefault();
+
     private static Dictionary<int, TEnum> CreateEnumerations()
     {
         var enumerationType = typeof(TEnum);
@@ -15,14 +24,6 @@ public class SmartEnum<TEnum> : IEquatable<SmartEnum<TEnum>> where TEnum : Smart
             .Select(fieldInfo => (TEnum) fieldInfo.GetValue(default)!)
             .ToDictionary(x => x.Value);
     }
-
-    public static TEnum? FromValue(int value) =>
-        _enumerations.TryGetValue(value, out var enumeration) ? enumeration : null;
-
-    public static TEnum? FromName(string name) =>
-        _enumerations.Values
-            .Where(w => w.Name == name)
-            .FirstOrDefault();
 
     public string Name { get; init; } = null!;
     public int Value { get; init; }
