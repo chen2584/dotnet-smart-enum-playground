@@ -1,0 +1,1 @@
+# dotnet-smart-enum-playground
